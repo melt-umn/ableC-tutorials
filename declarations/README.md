@@ -29,7 +29,7 @@ Type expressions in C are somewhat strangely designed, since the language was cr
 ```c
 int a = 0, *b, *c[4][];
 ```
-Here `int` is the base type expression, common for all declarations, and each variable being declared (referred to as a *declarator*) has a corresponding type modifier expression.  Let's look at how these are represented in ableC, in the file [TypeExprs.sv](../../edu.umn.cs.melt.ableC/abstractsyntax/host/TypeExprs.sv).
+Here `int` is the base type expression, common for all declarations, and each variable being declared (referred to as a *declarator*) has a corresponding type modifier expression.  Let's look at how these are represented in ableC, in the file [TypeExprs.sv](https://github.com/melt-umn/ableC/tree/develop/grammars/edu.umn.cs.melt.ableC/abstractsyntax/host/TypeExprs.sv).
 
 The first nonterminal here, `TypeName`, has a single production `typeName :: (TypeName ::= BaseTypeExpr TypeModifierExpr)` that pairs together a `BaseTypeExpr` and a `TypeModifierExpr`.  This is used in contexts where a type expression is written by itself, such as in a typecast.  
 
@@ -64,7 +64,7 @@ As a result of this, there are several invariants that must be kept by extension
 * If a transformation is performed on a type expression and used in the forward, the transformed type expression should still include any declarations in the original type expression.
 
 ## Declarations
-The abstract syntax for declarations in ableC is very hierarchical, and is contained in the file [Decls.sv](../../edu.umn.cs.melt.ableC/abstractsyntax/Decls.sv).  At the top level of declarations, we have `GlobalDecls`, which correspond to the list of declarations at the top level of a file.  The `Decls` nonterminal is similar, but for non-global declarations.  A single declaration is represented by the `Decl` nonterminal, which has several productions.  
+The abstract syntax for declarations in ableC is very hierarchical, and is contained in the file [Decls.sv](https://github.com/melt-umn/ableC/tree/develop/grammars/edu.umn.cs.melt.ableC/abstractsyntax/Decls.sv).  At the top level of declarations, we have `GlobalDecls`, which correspond to the list of declarations at the top level of a file.  The `Decls` nonterminal is similar, but for non-global declarations.  A single declaration is represented by the `Decl` nonterminal, which has several productions.  
 
 The `decls` production simply wraps `Decls` into a single `Decl`.  
 

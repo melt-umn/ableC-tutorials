@@ -23,7 +23,7 @@ On occasion some extensions, such as the [template extension](https://github.com
 * `parametersSubstitution :: (Substitution ::= String Parameters)`: Replace a parameter list consisting just of a single unnamed parameter with a `typedef`ed name as the type expression with a new parameter list.  
 * `refIdSubstitution :: (Substitution ::= String Parameters)`: Replace the refId specified on a `struct` via GCC `__attribute__`s with a new refId.  This is used when generating a struct to implement a parametric type, such as in the [closure extension](https://github.com/melt-umn/ableC-closure).  
 
-A number of helper functions are available that use the attributes to actually perform a subsititution on a nonterminal, such as `substExpr :: (Expr ::= subs::[Substitution] base::Expr)`.  These are defined in [Util.sv](../../edu.umn.cs.melt.ableC/abstractsyntax/substitution/Util.sv).  
+A number of helper functions are available that use the attributes to actually perform a subsititution on a nonterminal, such as `substExpr :: (Expr ::= subs::[Substitution] base::Expr)`.  These are defined in [Util.sv](https://github.com/melt-umn/ableC/tree/develop/grammars/edu.umn.cs.melt.ableC/abstractsyntax/substitution/Util.sv).  
 
 ## Example
 A simple example making use of these constructs is an exponent operator, which can be found in [AbstractSyntax.sv](edu.umn.cs.melt.tutorials.ableC.exponent/abstractsyntax/AbstractSyntax.sv).  This operator raises a numeric base to an integer power by performing repeated multiplication in a loop.  
