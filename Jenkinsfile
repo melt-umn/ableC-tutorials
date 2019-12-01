@@ -33,14 +33,16 @@ melt.trynode(extension_name) {
   melt.clearGenerated()
 }
 
-// Build a specific tutotial in the local workspace
+// Build a specific tutorial in the local workspace
 def task_tutorial(String tutorialpath, newenv) {
   def exts_base = env.WORKSPACE
   
   return {
+    // Each parallel task executes in a seperate node
     node {
       melt.clearGenerated()
-      
+
+      // Override the env to use the task node's workspace for generated
       newenv << "SILVER_GEN=${env.WORKSPACE}/generated"
       
       withEnv(newenv) {
