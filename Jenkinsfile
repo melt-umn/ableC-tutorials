@@ -43,7 +43,7 @@ def task_tutorial(String tutorialpath, newenv) {
       
       withEnv(newenv) {
         // Go back to our "parent" workspace, into the tutorial
-        dir("extensions/ableC-tutorials/${tutorialpath}") {
+        dir("${newenv.EXTS_BASE}/extensions/ableC-tutorials/${tutorialpath}") {
           sh "make -j"
         }
       }
