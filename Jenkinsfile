@@ -35,7 +35,7 @@ melt.trynode(extension_name) {
 
 // Build a specific tutotial in the local workspace
 def task_tutorial(String tutorialpath, newenv) {
-  def exts_base = newenv.EXTS_BASE
+  def exts_base = env.WORKSPACE
   
   return {
     node {
