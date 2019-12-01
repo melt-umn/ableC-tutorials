@@ -9,8 +9,7 @@ melt.setProperties(silverBase: true, ablecBase: true, silverAblecBase: true)
 def extension_name = 'ableC-tutorials'
 def extensions = []
 
-node {
-try {
+trynode('ableC-tutorials') {
 
   def newenv
 
@@ -21,22 +20,33 @@ try {
   }
 
   stage ("Test") {
-    withEnv(newenv) {
-      dir("extensions/ableC-tutorials") {
-        sh "make clean"
-        sh "make all -j3"
-      }
-    }
+    def tuts = ["construction", "declarations", "embedded_dsl", "error_checking", "extended_env", "getting_started", "lifting", "overloading"]
+    
+    def tasks = [:]
+    tasks << tuts.collectEntries { t -> [(t): task_tutorial(t, newenv)] }
+    
+    parallel tasks
   }
 
   /* If we've gotten all this way with a successful build, don't take up disk space */
   sh "rm -rf generated/* || true"
 }
-catch (e) {
-  melt.handle(e)
+
+// Tutorial in local workspace
+def task_tutorial(String tutorialpath, env) {
+  return {
+    node {
+      melt.clearGenerated()
+      
+      withEnv(env) {
+        // Go back to our "parent" workspace, into the tutorial
+        dir(tutorialpath) {
+          sh "make -j"
+        }
+      }
+      // Blow away these generated files in our private workspace
+      deleteDir()
+    }
+  }
 }
-finally {
-  melt.notify(job: extension_name)
-}
-} // node
 
