@@ -35,6 +35,8 @@ melt.trynode(extension_name) {
 
 // Build a specific tutotial in the local workspace
 def task_tutorial(String tutorialpath, newenv) {
+  def exts_base = newenv.EXTS_BASE
+  
   return {
     node {
       melt.clearGenerated()
@@ -43,7 +45,7 @@ def task_tutorial(String tutorialpath, newenv) {
       
       withEnv(newenv) {
         // Go back to our "parent" workspace, into the tutorial
-        dir("${newenv.EXTS_BASE}/extensions/ableC-tutorials/${tutorialpath}") {
+        dir("${exts_base}/extensions/ableC-tutorials/${tutorialpath}") {
           sh "make -j"
         }
       }
