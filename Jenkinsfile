@@ -9,7 +9,7 @@ melt.setProperties(silverBase: true, ablecBase: true, silverAblecBase: true)
 def extension_name = 'ableC-tutorials'
 def extensions = []
 
-trynode('ableC-tutorials') {
+melt.trynode('ableC-tutorials') {
 
   def newenv
 
