@@ -2,8 +2,8 @@ grammar edu:umn:cs:melt:tutorials:ableC:exponent:abstractsyntax;
 
 imports edu:umn:cs:melt:ableC:abstractsyntax:host;
 imports edu:umn:cs:melt:ableC:abstractsyntax:env;
+imports edu:umn:cs:melt:ableC:abstractsyntax:overloadable;
 imports edu:umn:cs:melt:ableC:abstractsyntax:construction;
-imports edu:umn:cs:melt:ableC:abstractsyntax:construction:parsing;
 imports edu:umn:cs:melt:ableC:abstractsyntax:substitution;
 
 imports silver:langutil;
@@ -25,25 +25,21 @@ top::Expr ::= l::Expr r::Expr
   local lTempName::String = "_l_" ++ toString(genInt());
   local rTempName::String = "_r_" ++ toString(genInt());
   local fwrd::Expr =
-    substExpr(
-      [typeExprSubstitution("__l_type__", directTypeExpr(l.typerep)),
-       typeExprSubstitution("__r_type__", directTypeExpr(r.typerep)),
-       exprSubstitution("__l__", \ Location -> l),
-       exprSubstitution("__r__", \ Location -> r)],
-      parseExpr(s"""
-({proto_typedef __l_type__, __r_type__;
-  __l_type__ ${lTempName} = __l__;
-  __r_type__ ${rTempName} = __r__;
-  __l_type__ _res = 1;
-  if (${rTempName} < 0) {
-    ${lTempName} = 1 / ${lTempName};
-    ${rTempName} = -${rTempName};
-  }
-  for (__r_type__ _i = 0; _i < ${rTempName}; _i++) {
-    _res *= ${lTempName};
-  }
-  _res;})
-"""));
+    ableC_Expr {
+      ({$Decl{autoDecl(name(lTempName, location=builtin), decExpr(l, location=builtin))};
+        $Decl{autoDecl(name(rTempName, location=builtin), decExpr(r, location=builtin))};
+        $directTypeExpr{l.typerep} _res = 1;
+        if ($name{rTempName} < 0) {
+          $name{lTempName} = 1 / $name{lTempName};
+          $name{rTempName} = -$name{rTempName};
+        }
+        for (long _i = 0; _i < $name{rTempName}; _i++) {
+          _res *= $name{lTempName};
+        }
+        _res;})
+    };
+  
+  r.env = addEnv(l.defs, l.env);
   
   forwards to mkErrorCheck(localErrors, fwrd);
 }
