@@ -64,7 +64,7 @@ As a result of this, there are several invariants that must be kept by extension
 * If a transformation is performed on a type expression and used in the forward, the transformed type expression should still include any declarations in the original type expression.
 
 ## Declarations
-The abstract syntax for declarations in ableC is very hierarchical, and is contained in the file [Decls.sv](https://github.com/melt-umn/ableC/tree/develop/grammars/edu.umn.cs.melt.ableC/abstractsyntax/Decls.sv).  At the top level of declarations, we have `GlobalDecls`, which correspond to the list of declarations at the top level of a file.  The `Decls` nonterminal is similar, but for non-global declarations.  A single declaration is represented by the `Decl` nonterminal, which has several productions.  
+The abstract syntax for declarations in ableC is very hierarchical, and is contained in the file [Decls.sv](https://github.com/melt-umn/ableC/tree/develop/grammars/edu.umn.cs.melt.ableC/abstractsyntax/host/Decls.sv).  At the top level of declarations, we have `GlobalDecls`, which correspond to the list of declarations at the top level of a file.  The `Decls` nonterminal is similar, but for non-global declarations.  A single declaration is represented by the `Decl` nonterminal, which has several productions.  
 
 The `decls` production simply wraps `Decls` into a single `Decl`.  
 
