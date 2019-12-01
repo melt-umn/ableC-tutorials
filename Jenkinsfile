@@ -28,6 +28,9 @@ melt.trynode(extension_name) {
     
     parallel tasks
   }
+
+  /* If we've gotten all this way with a successful build, don't take up disk space */
+  melt.clearGenerated()
 }
 
 // Build a specific tutotial in the local workspace
@@ -40,7 +43,7 @@ def task_tutorial(String tutorialpath, newenv) {
       
       withEnv(newenv) {
         // Go back to our "parent" workspace, into the tutorial
-        dir("extensions/${extension_name}/${tutorialpath}") {
+        dir("extensions/ableC-tutorials/${tutorialpath}") {
           sh "make -j"
         }
       }
