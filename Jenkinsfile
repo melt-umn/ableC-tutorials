@@ -6,9 +6,6 @@ library "github.com/melt-umn/jenkins-lib"
 
 melt.setProperties(silverBase: true, ablecBase: true, silverAblecBase: true)
 
-def extension_name = 'ableC-tutorials'
-def extensions = []
-
 melt.trynode('ableC-tutorials') {
 
   def newenv
@@ -26,6 +23,9 @@ melt.trynode('ableC-tutorials') {
 
 // Tutorial in local workspace
 def task_tutorial(String tutorialpath) {
+  def extension_name = 'ableC-tutorials'
+  def extensions = []
+  
   return {
     node {
       melt.clearGenerated()
