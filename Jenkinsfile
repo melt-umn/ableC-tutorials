@@ -7,32 +7,32 @@ library "github.com/melt-umn/jenkins-lib"
 melt.setProperties(silverBase: true, ablecBase: true, silverAblecBase: true)
 
 melt.trynode('ableC-tutorials') {
+  def extension_name = 'ableC-tutorials'
+  def extensions = []
+  
+  melt.clearGenerated()
+      
+  // We'll check it out underneath extensions/ just so we can re-use this code
+  // It shouldn't hurt because newenv should specify where extensions and ablec_base can be found
+  def newenv = ablec.prepareWorkspace(extension_name, extensions, true)
 
-  def newenv
+  
   
   def tuts = ["construction", "declarations", "embedded_dsl", "error_checking", "extended_env", "getting_started", "lifting", "overloading"]
   
   def tasks = [:]
-  tasks << tuts.collectEntries { t -> [(t): task_tutorial(t)] }
+  tasks << tuts.collectEntries { t -> [(t): task_tutorial(t, newenv)] }
   
   parallel tasks
-
-  /* If we've gotten all this way with a successful build, don't take up disk space */
-  sh "rm -rf generated/* || true"
 }
 
-// Tutorial in local workspace
-def task_tutorial(String tutorialpath) {
-  def extension_name = 'ableC-tutorials'
-  def extensions = []
-  
+// Build a specific tutotial in the local workspace
+def task_tutorial(String tutorialpath, newenv) {
   return {
     node {
       melt.clearGenerated()
       
-      // We'll check it out underneath extensions/ just so we can re-use this code
-      // It shouldn't hurt because newenv should specify where extensions and ablec_base can be found
-      newenv = ablec.prepareWorkspace(extension_name, extensions, true)
+      newenv << "SILVER_GEN=${env.WORKSPACE}/generated"
       
       withEnv(newenv) {
         // Go back to our "parent" workspace, into the tutorial
