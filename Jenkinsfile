@@ -41,6 +41,8 @@ def task_tutorial(String tutorialpath, env) {
       withEnv(env) {
         // Go back to our "parent" workspace, into the tutorial
         dir(tutorialpath) {
+          sh "pwd"
+          sh "ls"
           sh "make -j"
         }
       }
