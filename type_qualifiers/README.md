@@ -50,7 +50,7 @@ dimensional analysis type qualifier that is parameterized by an arithmetic
 expression over the SI units.
 
 ```
-marking terminal Tainted_t 'tainted' lexer classes {Ckeyword};
+marking terminal Tainted_t 'tainted' lexer classes {Keyword, Global};
 
 concrete production taintedTypeQualifier_c
 top::TypeQualifier_c ::= 'tainted'

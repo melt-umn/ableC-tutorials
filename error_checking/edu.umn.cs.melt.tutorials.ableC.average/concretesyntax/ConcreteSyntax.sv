@@ -5,7 +5,7 @@ imports silver:langutil only ast;
 
 imports edu:umn:cs:melt:tutorials:ableC:average:abstractsyntax;
 
-marking terminal AverageOp_t '~~';
+marking terminal AverageOp_t '~~' lexer classes {Operator};
 
 concrete production averageExpr_c
 top::AddMulNoneOp_c ::= '~~'
