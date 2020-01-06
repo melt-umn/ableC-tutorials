@@ -10,7 +10,7 @@ imports edu:umn:cs:melt:ableC:abstractsyntax:env;
 
 import edu:umn:cs:melt:tutorials:ableC:interval;
 
-marking terminal Intr_t 'intr' lexer classes {Ckeyword};
+marking terminal Intr_t 'intr' lexer classes {Keyword, Global};
 
 concrete productions top::PrimaryExpr_c
 | 'intr' '[' min::AssignExpr_c ',' max::AssignExpr_c ']'
