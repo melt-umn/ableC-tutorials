@@ -13,7 +13,7 @@ GRAMMAR_DIRS=$(ABLEC_BASE)/grammars .
 # All silver files in included grammars, to be included as dependancies
 GRAMMAR_SOURCES=$(shell find $(GRAMMAR_DIRS) -name *.sv -print0 | xargs -0)
 # Flags passed to silver including the appropriate directories
-override SVFLAGS+=$(addprefix -I ,$(GRAMMAR_DIRS))
+override SVFLAGS+=$(addprefix -I ,$(GRAMMAR_DIRS)) --clean --warn-all
 
 # All extended C files to compile
 XC_FILES=$(wildcard *.xc)
@@ -24,7 +24,7 @@ OBJECTS=$(XC_FILES:.xc=.o)
 # All executables that should be generated
 EXECUTABLES=$(XC_FILES:.xc=.out)
 # All evaluation marker files that should be generated
-TESTS=$(XC_FILES:.xc=.test)
+TESTS=
 
 # All directories contining extension header files that may be included
 XC_INCLUDE_DIRS=$(wildcard include)

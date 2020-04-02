@@ -29,7 +29,7 @@ Type expressions in C are somewhat strangely designed, since the language was cr
 ```c
 int a = 0, *b, *c[4][];
 ```
-Here `int` is the base type expression, common for all declarations, and each variable being declared (referred to as a *declarator*) has a corresponding type modifier expression.  Let's look at how these are represented in ableC, in the file [TypeExprs.sv](../../edu.umn.cs.melt.ableC/abstractsyntax/host/TypeExprs.sv).
+Here `int` is the base type expression, common for all declarations, and each variable being declared (referred to as a *declarator*) has a corresponding type modifier expression.  Let's look at how these are represented in ableC, in the file [TypeExprs.sv](https://github.com/melt-umn/ableC/tree/develop/grammars/edu.umn.cs.melt.ableC/abstractsyntax/host/TypeExprs.sv).
 
 The first nonterminal here, `TypeName`, has a single production `typeName :: (TypeName ::= BaseTypeExpr TypeModifierExpr)` that pairs together a `BaseTypeExpr` and a `TypeModifierExpr`.  This is used in contexts where a type expression is written by itself, such as in a typecast.  
 
@@ -64,7 +64,7 @@ As a result of this, there are several invariants that must be kept by extension
 * If a transformation is performed on a type expression and used in the forward, the transformed type expression should still include any declarations in the original type expression.
 
 ## Declarations
-The abstract syntax for declarations in ableC is very hierarchical, and is contained in the file [Decls.sv](../../edu.umn.cs.melt.ableC/abstractsyntax/Decls.sv).  At the top level of declarations, we have `GlobalDecls`, which correspond to the list of declarations at the top level of a file.  The `Decls` nonterminal is similar, but for non-global declarations.  A single declaration is represented by the `Decl` nonterminal, which has several productions.  
+The abstract syntax for declarations in ableC is very hierarchical, and is contained in the file [Decls.sv](https://github.com/melt-umn/ableC/tree/develop/grammars/edu.umn.cs.melt.ableC/abstractsyntax/host/Decls.sv).  At the top level of declarations, we have `GlobalDecls`, which correspond to the list of declarations at the top level of a file.  The `Decls` nonterminal is similar, but for non-global declarations.  A single declaration is represented by the `Decl` nonterminal, which has several productions.  
 
 The `decls` production simply wraps `Decls` into a single `Decl`.  
 
@@ -98,8 +98,23 @@ At the top level in the ableC concrete syntax for a global declaration is the `E
 
 A `Declaration_c` consists of `DeclarationSpecifiers_c`, containing the complete specification of a type, and `InitDeclaratorList_c`, representing a list of declarators.  
 
-*TODO: Expand this section with more implementation details...*
-
 When introducing new extension type expressions, the `TypeSpecifier_c` nonterminal is typically extended to implement a new `BaseTypeExpr`.  New kinds of declarations that don't directly fit in to the framework of type expressions may extend `Declaration_c` directly.  An example of this may be seen in the concrete syntax for the example tuple extension, in [ConcreteSyntax.sv](edu.umn.cs.melt.tutorials.ableC.tuple/concretesyntax/ConcreteSyntax.sv).  
+
+## Lexer classes
+In addition to reusing host-language terminals, extensions may introduce new terminals for their concrete syntax.  These can include marking terminals, which indicate the beginning of new extension syntax, as well as non-marking terminals used elsewhere within extension productions.  ableC provides a number of *lexer classes* used to categorize these terminals for a number of purposes.
+
+A number of lexer classes exist primarily for documentation purposes, and are also available for future use by IDE editors in providing automatic syntax highlighting.  These lexer classes include `Comment`, `Keyword`, `Type`, `Identifier`, `NumericLiteral`, `StringLiteral`, `Assignment`, and `Operator`.  It is suggested that extensions implementing [embedded domain specific languages](../embedded_dsl/) provide their own lexer classes for associated keywords.
+
+Several lexer classes also exist for task of disambiguating keyword terminals.  Keywords in C such as `if` or `return` are lexically ambiguous with identifiers and type names.  This resolution is done using lexical precedence with the `Reserved` lexer class; a terminal in this lexer class will "dominate" identifiers with the same name, preventing them from ever being returned by the scanner.
+
+This approach is fine for host languages, however extensions should not use lexical precedence for marking terminals - doing so means that now using the name of a keyword in host-language code (such as in a header file) or other extensions is now illegal, even in places where the extension terminal is not valid.  A somewhat better alternative is to use a disambiguation function to always choose the extension terminal over the host identifier, but only in places where there is an actual ambiguity.
+
+However, the best approach to disambiguation of a name-like terminal is to make a determination based on the context of what names have been defined.  This is required in order to parse the unextended C language, due to an ambiguity between identifiers and type names; resolution requires knowledge of what value and type definitions have been previously seen.  This is implemented in ableC by the `Scoped` lexer class; its members submit to `Reserved` terminals using lexical precedence, and are disambiguated from any other `Scoped` terminals by checking the `context :: [[Pair<String TerminalId>]]` parser attribute.  This is essentially a mutable global variable containing a stack of environment contents for each scope, mapping names to the terminal that should be chosen for disambiguation.  Value and type definitions have an associated parser action to update this context with the newly defined names, and opening/closing bracket terminals will push or pop a new frame of this context stack.  
+
+Extensions may introduce new identifier-like marking terminals that are disambiguated in this way using the `Scoped` lexer class; for an example of this see the [template extension](https://github.com/melt-umn/ableC-templating).  This scoping mechanism can also be used to introduce lexically-scoped "keyword" marking terminals, that are analogous to a global definition that may be shadowed by definitions of the same name (unless explicitly selected using transparent prefixes.)  This is done by placing terminals in the `Global` lexer class, an extension of `Scoped`.  After checking `context` for definitions of a particular name and not finding one, `Scoped` will check if any potential terminal is a member of the `Global` lexer class.  
+
+The case when two or more extensions define the same `Global` marking terminal is ambiguous; by default, we disallow both options in this case and raise a syntax error.  This ambiguity may be resolved at composition time using transparent prefixes and/or a disambiguation preference that overrides scoped resolution.  Alternatively, a preference for scoped resolution can be specified by initializing the `globalPreferences :: [Pair<[TerminalId] TerminalId>]` parser attribute with additional items.  Each entry is similar to a disambiguation group, where some ambiguity between a list of `Global` terminals on the left is always resolved to a particular terminal on the right.  Extensions that knowingly introduce conflicting `Global` terminals may wish to introduce default preferences in this manner, as done by the [template algebraic datatype extension](https://github.com/melt-umn/ableC-template-algebraic-data-types/blob/develop/grammars/edu.umn.cs.melt.exts.ableC.templateAlgebraicDataTypes/datatype/concretesyntax/DataType.sv). 
+
+The ableC sample projects provide more thorough examples of disambiguation using [transparent prefixes](https://github.com/melt-umn/ableC-sample-projects/tree/develop/using_transparent_prefixes) and [scoped terminals](https://github.com/melt-umn/ableC-sample-projects/tree/develop/using_scoped_keywords).
 
 [Next section: Embedded domain specific languages](../embedded_dsl/)

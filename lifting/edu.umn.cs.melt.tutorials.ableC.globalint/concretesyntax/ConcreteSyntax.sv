@@ -7,7 +7,7 @@ imports silver:langutil only ast;
 
 imports edu:umn:cs:melt:tutorials:ableC:globalint:abstractsyntax;
 
-marking terminal GlobalInt_t 'globalint' lexer classes {Ckeyword};
+marking terminal GlobalInt_t 'globalint' lexer classes {Keyword, Global};
 
 concrete production globalIntRefExpr_c
 top::PrimaryExpr_c ::= 'globalint' id::Identifier_t

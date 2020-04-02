@@ -8,7 +8,7 @@ imports edu:umn:cs:melt:ableC:abstractsyntax:host;
 imports edu:umn:cs:melt:ableC:abstractsyntax:construction;
 imports edu:umn:cs:melt:tutorials:ableC:prefixExpr:abstractsyntax;
 
-marking terminal PrefixExpr_t 'prefix' lexer classes {Ckeyword};
+marking terminal PrefixExpr_t 'prefix' lexer classes {Keyword, Global};
 
 -- Bridge production from host concrete syntax to extension concrete syntax
 -- Note that this begins with a 'marking' terminal, more on that later
@@ -21,8 +21,7 @@ top::AssignExpr_c ::= 'prefix' '(' pe::PrefixExpr_c ')'
 -- 'closed' nonterminal = allow nonforwarding productions, disallow new attributes in other extensions
 closed nonterminal PrefixExpr_c with ast<PrefixExpr>, location;
 
-
-terminal NewPlus_t '+' ;
+terminal NewPlus_t '+' lexer classes Operator;
 
 -- New syntax for prefix expressions
 -- Note that most of the terminals used here are from the host

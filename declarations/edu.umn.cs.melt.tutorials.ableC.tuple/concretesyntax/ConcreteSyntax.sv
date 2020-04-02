@@ -9,7 +9,7 @@ imports silver:langutil only ast;
 
 imports edu:umn:cs:melt:tutorials:ableC:tuple:abstractsyntax;
 
-marking terminal Tuple_t 'tuple' lexer classes {Ckeyword};
+marking terminal Tuple_t 'tuple' lexer classes {Type, Global};
 
 concrete production tupleDecl_c
 top::Declaration_c ::= 'tuple' id::Identifier_t '{' tns::TypeNames_c '}'

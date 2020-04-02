@@ -9,16 +9,17 @@ melt.setProperties(silverBase: true, ablecBase: true, silverAblecBase: true)
 def extension_name = 'ableC-tutorials'
 def extensions = []
 
-trynode('ableC-tutorials') {
-
+melt.trynode(extension_name) {
   def newenv
 
   stage ("Checkout") {
+    melt.clearGenerated()
+    
     // We'll check it out underneath extensions/ just so we can re-use this code
     // It shouldn't hurt because newenv should specify where extensions and ablec_base can be found
     newenv = ablec.prepareWorkspace(extension_name, extensions, true)
   }
-
+  
   stage ("Test") {
     def tuts = ["construction", "declarations", "embedded_dsl", "error_checking", "extended_env", "getting_started", "lifting", "overloading"]
     
@@ -29,18 +30,24 @@ trynode('ableC-tutorials') {
   }
 
   /* If we've gotten all this way with a successful build, don't take up disk space */
-  sh "rm -rf generated/* || true"
+  melt.clearGenerated()
 }
 
-// Tutorial in local workspace
-def task_tutorial(String tutorialpath, env) {
+// Build a specific tutorial in the local workspace
+def task_tutorial(String tutorialpath, newenv) {
+  def exts_base = env.WORKSPACE
+  
   return {
+    // Each parallel task executes in a seperate node
     node {
       melt.clearGenerated()
+
+      // Override the env to use the task node's workspace for generated
+      newenv << "SILVER_GEN=${env.WORKSPACE}/generated"
       
-      withEnv(env) {
+      withEnv(newenv) {
         // Go back to our "parent" workspace, into the tutorial
-        dir(tutorialpath) {
+        dir("${exts_base}/extensions/ableC-tutorials/${tutorialpath}") {
           sh "make -j"
         }
       }

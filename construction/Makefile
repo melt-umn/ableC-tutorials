@@ -3,7 +3,7 @@
 ABLEC_BASE?=../../ableC
 
 # The Silver compiler to use
-SILVER=silver
+SILVER=silver-ableC
 # The jar file to build
 ABLEC_JAR=ableC.jar
 # The artifact specification grammar to compile
@@ -13,7 +13,7 @@ GRAMMAR_DIRS=$(ABLEC_BASE)/grammars .
 # All silver files in included grammars, to be included as dependancies
 GRAMMAR_SOURCES=$(shell find $(GRAMMAR_DIRS) -name *.sv -print0 | xargs -0)
 # Flags passed to silver including the appropriate directories
-override SVFLAGS+=$(addprefix -I ,$(GRAMMAR_DIRS))
+override SVFLAGS+=$(addprefix -I ,$(GRAMMAR_DIRS)) --clean --warn-all
 
 # All extended C files to compile
 XC_FILES=$(wildcard *.xc)

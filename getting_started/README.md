@@ -22,6 +22,6 @@ At the top-level, an artifact grammar contains a simple specification of the com
 
 Example programs are provided, with the extension `.xc`.  
 
-A Makefile at the top-level will automatically compile the extension, translate, compile, and run the example programs.  
+A Makefile at the top-level will automatically compile the extension, translate, compile, and run the example programs.  These Makefiles are written in a "generic" way for easier maintainability; for clarity, an equivalent but more minimal `Makefile.simple` file is provided in this folder.
 
 [Next section: Error checking](../error_checking/)
