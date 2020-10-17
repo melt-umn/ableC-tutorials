@@ -16,7 +16,7 @@ struct __attribute__((refId("edu:umn:cs:melt:tutorials:ableC:interval:interval")
 
 // Construct a new interval
 static interval new_interval(double min, double max) {
-  return (interval){min, max};
+  return (interval)(struct _interval_s){min, max};
 }
 
 // Negate an interval
