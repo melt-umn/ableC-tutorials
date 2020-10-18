@@ -19,6 +19,22 @@ top::Expr ::= min::Expr max::Expr
   forwards to mkErrorCheck(localErrors, fwrd);
 }
 
+abstract production initInterval
+top::Initializer ::= i::InitList
+{
+  top.pp = ppConcat([text("{"), ppImplode(text(", "), i.pps), text("}")]);
+  i.expectedType = top.expectedType;
+  i.expectedTypes = [];
+  i.tagEnvIn = emptyEnv();
+  i.initIndex = 0;
+  forwards to
+    case i of
+    | consInit(positionalInit(exprInitializer(min)), consInit(positionalInit(exprInitializer(max)), nilInit())) ->
+      exprInitializer(newInterval(min, max, location=top.location), location=top.location)
+    | _ -> exprInitializer(errorExpr([err(top.location, "Invalid interval initializer")], location=top.location), location=top.location)
+    end;
+}
+
 -- Extension productions that are used to resolve overloaded operators
 abstract production memberInterval
 top::Expr ::= lhs::Expr deref::Boolean rhs::Name
