@@ -22,7 +22,7 @@ top::ExtType ::=
     extType(
       top.givenQualifiers,
       refIdExtType(
-        structSEU(), "_interval_s",
+        structSEU(), just("_interval_s"),
         "edu:umn:cs:melt:tutorials:ableC:interval:interval"));
   top.mangledName = "interval";
   top.isEqualTo =
