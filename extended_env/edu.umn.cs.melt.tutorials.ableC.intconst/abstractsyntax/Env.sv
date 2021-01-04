@@ -1,6 +1,6 @@
 grammar edu:umn:cs:melt:tutorials:ableC:intconst:abstractsyntax;
 
-imports silver:util:raw:treemap as tm;
+imports silver:util:treemap as tm;
 
 -- Define an item to store values to be placed into the environment
 synthesized attribute value::Integer;
