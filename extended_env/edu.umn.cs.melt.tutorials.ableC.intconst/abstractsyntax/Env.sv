@@ -28,7 +28,7 @@ synthesized attribute intConstContribs::Contribs<IntConstItem> occurs on Defs, D
 aspect production emptyEnv_i
 top::Env ::=
 {
-  top.intConsts = [tm:empty(compareString)];
+  top.intConsts = [tm:empty()];
 }
 aspect production addEnv_i
 top::Env ::= d::Defs  e::Decorated Env
@@ -38,7 +38,7 @@ top::Env ::= d::Defs  e::Decorated Env
 aspect production openScopeEnv_i
 top::Env ::= e::Decorated Env
 {
-  top.intConsts = tm:empty(compareString) :: e.intConsts;
+  top.intConsts = tm:empty() :: e.intConsts;
 }
 aspect production nonGlobalEnv_i
 top::Env ::= e::Decorated Env
