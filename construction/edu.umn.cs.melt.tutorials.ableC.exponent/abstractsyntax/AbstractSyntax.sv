@@ -21,8 +21,8 @@ top::Expr ::= l::Expr r::Expr
      then [err(l.location, s"Exponent power must have integer type (got ${showType(r.typerep)})")]
      else []);
 
-  local lTempName::String = "_l_" ++ toString(genInt());
-  local rTempName::String = "_r_" ++ toString(genInt());
+  local lTempName::String = "_l_" ++ toString(genIntT());
+  local rTempName::String = "_r_" ++ toString(genIntT());
   local fwrd::Expr =
     ableC_Expr {
       ({$Decl{autoDecl(name(lTempName, location=builtin), decExpr(l, location=builtin))};
