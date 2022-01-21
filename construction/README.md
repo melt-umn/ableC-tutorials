@@ -28,6 +28,6 @@ A number of helper functions are available that use the attributes to actually p
 ## Example
 A simple example making use of these constructs is an exponent operator, which can be found in [AbstractSyntax.sv](edu.umn.cs.melt.tutorials.ableC.exponent/abstractsyntax/AbstractSyntax.sv).  This operator raises a numeric base to an integer power by performing repeated multiplication in a loop.  
 
-Since the evaluation of expressions in C may have side-effects, every child expression should be included in the forward exactly once.  To avoid duplications, temporary variables are used, declared with type expressions generated from the types of the operands.  The names of these temporary variables must be specified with `toString(genIntT())` prefixes; this is to ensure uniqueness such that when this operator is nested, a variable is not initialized with another variable of the same name, which would effectively be an initialization with itself.  
+Since the evaluation of expressions in C may have side-effects, every child expression should be included in the forward exactly once.  To avoid duplications, temporary variables are used, declared with type expressions generated from the types of the operands.  The names of these temporary variables must be specified with `toString(genInt())` prefixes; this is to ensure uniqueness such that when this operator is nested, a variable is not initialized with another variable of the same name, which would effectively be an initialization with itself.  
 
 [Next section: Lifting](../lifting/)
