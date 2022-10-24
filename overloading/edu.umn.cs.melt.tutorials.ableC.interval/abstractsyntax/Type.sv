@@ -22,13 +22,14 @@ top::ExtType ::=
     extType(
       top.givenQualifiers,
       refIdExtType(
-        structSEU(), "_interval_s",
+        structSEU(), just("_interval_s"),
         "edu:umn:cs:melt:tutorials:ableC:interval:interval"));
   top.mangledName = "interval";
   top.isEqualTo =
     \ other::ExtType -> case other of intervalType() -> true | _ -> false end;
   
   -- Additional equations specify overload productions for the interval type
+  top.objectInitProd = just(initInterval(_, location=_));
   top.memberProd = just(memberInterval(_, _, _, location=_));
   top.negativeProd = just(negInterval(_, location=_));
   top.bitNegateProd = just(invInterval(_, location=_));
