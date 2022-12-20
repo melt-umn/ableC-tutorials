@@ -11,6 +11,7 @@ abstract production averageExpr
 top::Expr ::= l::Expr r::Expr
 {
   top.pp = pp"(${l.pp} ~~ ${r.pp})";
+  propagate env, controlStmtContext;
 
   local localErrors::[Message] =
     (if !l.typerep.isArithmeticType

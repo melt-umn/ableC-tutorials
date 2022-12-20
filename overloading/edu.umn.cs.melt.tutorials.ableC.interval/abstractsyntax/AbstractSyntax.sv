@@ -23,6 +23,7 @@ abstract production initInterval
 top::Initializer ::= i::InitList
 {
   top.pp = ppConcat([text("{"), ppImplode(text(", "), i.pps), text("}")]);
+  propagate env, controlStmtContext;
   i.expectedType = top.expectedType;
   i.expectedTypes = [];
   i.tagEnvIn = emptyEnv();
@@ -40,6 +41,7 @@ abstract production memberInterval
 top::Expr ::= lhs::Expr deref::Boolean rhs::Name
 {
   top.pp = parens(ppConcat([lhs.pp, text(if deref then "->" else "."), rhs.pp]));
+  propagate env, controlStmtContext;
 
   local localErrors::[Message] =
     checkIntervalHeaderDef("new_interval", top.location, top.env) ++
@@ -66,6 +68,7 @@ abstract production negInterval
 top::Expr ::= i::Expr
 {
   top.pp = pp"-(${i.pp})";
+  propagate env, controlStmtContext;
 
   local localErrors::[Message] =
     checkIntervalHeaderDef("neg_interval", top.location, top.env) ++
@@ -79,6 +82,7 @@ abstract production invInterval
 top::Expr ::= i::Expr
 {
   top.pp = pp"~(${i.pp})";
+  propagate env, controlStmtContext;
   
   local localErrors::[Message] =
     checkIntervalHeaderDef("inv_interval", top.location, top.env) ++
@@ -92,6 +96,7 @@ abstract production addInterval
 top::Expr ::= i1::Expr i2::Expr
 {
   top.pp = pp"(${i1.pp}) + (${i2.pp})";
+  propagate env, controlStmtContext;
 
   local localErrors::[Message] =
     checkIntervalHeaderDef("add_interval", top.location, top.env) ++
@@ -106,6 +111,7 @@ abstract production subInterval
 top::Expr ::= i1::Expr i2::Expr
 {
   top.pp = pp"(${i1.pp}) - (${i2.pp})";
+  propagate env, controlStmtContext;
 
   local localErrors::[Message] =
     checkIntervalHeaderDef("sub_interval", top.location, top.env) ++
@@ -120,6 +126,7 @@ abstract production mulInterval
 top::Expr ::= i1::Expr i2::Expr
 {
   top.pp = pp"(${i1.pp}) * (${i2.pp})";
+  propagate env, controlStmtContext;
 
   local localErrors::[Message] =
     checkIntervalHeaderDef("mul_interval", top.location, top.env) ++
@@ -134,6 +141,7 @@ abstract production divInterval
 top::Expr ::= i1::Expr i2::Expr
 {
   top.pp = pp"(${i1.pp}) / (${i2.pp})";
+  propagate env, controlStmtContext;
 
   local localErrors::[Message] =
     checkIntervalHeaderDef("div_interval", top.location, top.env) ++
@@ -148,6 +156,7 @@ abstract production equalsInterval
 top::Expr ::= i1::Expr i2::Expr
 {
   top.pp = pp"(${i1.pp}) == (${i2.pp})";
+  propagate env, controlStmtContext;
 
   local localErrors::[Message] =
     checkIntervalHeaderDef("equals_interval", top.location, top.env) ++

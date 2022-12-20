@@ -12,6 +12,7 @@ abstract production exponentExpr
 top::Expr ::= l::Expr r::Expr
 {
   top.pp = pp"(${l.pp} ** ${r.pp})";
+  propagate controlStmtContext;
 
   local localErrors::[Message] =
     (if !l.typerep.isArithmeticType
@@ -38,6 +39,7 @@ top::Expr ::= l::Expr r::Expr
         _res;})
     };
   
+  l.env = top.env;
   r.env = addEnv(l.defs, l.env);
   
   forwards to mkErrorCheck(localErrors, fwrd);

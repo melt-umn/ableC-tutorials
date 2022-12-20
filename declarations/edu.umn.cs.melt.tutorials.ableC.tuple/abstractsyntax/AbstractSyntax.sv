@@ -13,6 +13,7 @@ abstract production tupleDecl
 top::Decl ::= n::Name tns::TypeNames
 {
   top.pp = pp"tuple ${n.pp} (${ppImplode(pp", ", tns.pps)})";
+  propagate env, controlStmtContext;
 
   tns.index = 0;
 
