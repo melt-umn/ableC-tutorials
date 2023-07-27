@@ -76,7 +76,7 @@ top::Def ::=
 abstract production intConstDef
 top::Def ::= s::String  v::IntConstItem
 {
-  top.intConstContribs = [pair(s, v)];
+  top.intConstContribs = [(s, v)];
 }
 
 function lookupIntConst
