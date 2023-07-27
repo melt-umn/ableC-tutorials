@@ -12,24 +12,25 @@ abstract production prefixExpr
 top::Expr ::= pe::PrefixExpr
 {
   top.pp = pp"prefix (${pe.pp})";
-  propagate env, controlStmtContext;
+
+  -- env and controlStmtContext flow down the translation tree, decorated here.
+  forward fwrd = @pe.toExpr;
 
   -- Check for errors on the EDSL AST
   -- Either forward to an error production or the computed translation
-  forwards to mkErrorCheck(pe.errors, pe.toExpr);
+  forwards to mkErrorCheck(pe.errors, fwrd);
 }
 
 -- New attribute to compute the translation of a PrefixExpr to an Expr
-synthesized attribute toExpr::Expr;
+translation attribute toExpr::Expr;
 
-nonterminal PrefixExpr with location, pp, toExpr, typerep, errors, env, controlStmtContext;
-propagate env, controlStmtContext on PrefixExpr;
+nonterminal PrefixExpr with location, pp, toExpr, typerep, errors;
 
 abstract production addPrefixExpr
 top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
 {
   top.pp = pp"+ ${pe1.pp} ${pe2.pp}";
-  top.toExpr = addExpr(pe1.toExpr, pe2.toExpr, location=top.location);
+  top.toExpr = addExpr(@pe1.toExpr, @pe2.toExpr, location=top.location);
   top.typerep = usualAdditiveConversionsOnTypes(pe1.typerep, pe2.typerep);
   top.errors := pe1.errors ++ pe2.errors;
 
@@ -46,7 +47,7 @@ abstract production subPrefixExpr
 top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
 {
   top.pp = pp"- ${pe1.pp} ${pe2.pp}";
-  top.toExpr = subExpr(pe1.toExpr, pe2.toExpr, location=top.location);
+  top.toExpr = subExpr(@pe1.toExpr, @pe2.toExpr, location=top.location);
   top.typerep = usualSubtractiveConversionsOnTypes(pe1.typerep, pe2.typerep);
   top.errors := pe1.errors ++ pe2.errors;
 
@@ -63,7 +64,7 @@ abstract production mulPrefixExpr
 top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
 {
   top.pp = pp"* ${pe1.pp} ${pe2.pp}";
-  top.toExpr = mulExpr(pe1.toExpr, pe2.toExpr, location=top.location);
+  top.toExpr = mulExpr(@pe1.toExpr, @pe2.toExpr, location=top.location);
   top.typerep = usualArithmeticConversionsOnTypes(pe1.typerep, pe2.typerep);
   top.errors := pe1.errors ++ pe2.errors;
 
@@ -80,7 +81,7 @@ abstract production divPrefixExpr
 top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
 {
   top.pp = pp"/ ${pe1.pp} ${pe2.pp}";
-  top.toExpr = divExpr(pe1.toExpr, pe2.toExpr, location=top.location);
+  top.toExpr = divExpr(@pe1.toExpr, @pe2.toExpr, location=top.location);
   top.typerep = usualArithmeticConversionsOnTypes(pe1.typerep, pe2.typerep);
   top.errors := pe1.errors ++ pe2.errors;
 
@@ -97,7 +98,7 @@ abstract production exprPrefixExpr
 top::PrefixExpr ::= e::Expr
 {
   top.pp = parens(e.pp);
-  top.toExpr = e;
+  top.toExpr = @e;
   top.typerep = e.typerep;
   top.errors := e.errors;
 }
