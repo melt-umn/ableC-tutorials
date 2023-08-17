@@ -11,5 +11,5 @@ exports edu:umn:cs:melt:tutorials:ableC:intconst:concretesyntax:keyword;
 concrete production intConstRef_c
 top::PrimaryExpr_c ::= 'intconst' id::Identifier_t
 { 
-  top.ast = intConstRef(fromId(id), location=top.location);
+  top.ast = intConstRef(fromId(id));
 }

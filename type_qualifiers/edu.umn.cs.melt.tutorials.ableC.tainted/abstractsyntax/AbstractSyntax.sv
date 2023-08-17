@@ -21,8 +21,8 @@ top::Qualifier ::=
     | _                  -> false
     end;
   top.errors :=
-    if containsQualifier(untaintedQualifier(location=builtin), top.typeToQualify)
-    then [err(top.location, "cannot qualify a type as both tainted and untainted")]
+    if containsQualifier(untaintedQualifier(), top.typeToQualify)
+    then [errFromOrigin(top, "cannot qualify a type as both tainted and untainted")]
     else [];
 }
 
@@ -40,9 +40,8 @@ top::Qualifier ::=
     | _                  -> false
     end;
   top.errors :=
-    if containsQualifier(taintedQualifier(location=builtin), top.typeToQualify)
-    then [err(top.location, "cannot qualify a type as both tainted and untainted")]
+    if containsQualifier(taintedQualifier(), top.typeToQualify)
+    then [errFromOrigin(top, "cannot qualify a type as both tainted and untainted")]
     else [];
 }
 
-global builtin::Location = builtinLoc("tainted");

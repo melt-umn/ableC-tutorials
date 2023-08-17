@@ -3,13 +3,13 @@ grammar edu:umn:cs:melt:tutorials:ableC:interval:abstractsyntax;
 import edu:umn:cs:melt:ableC:abstractsyntax:overloadable;
 
 abstract production intervalTypeExpr
-top::BaseTypeExpr ::= q::Qualifiers loc::Location
+top::BaseTypeExpr ::= q::Qualifiers
 {
   top.pp = ppConcat([terminate(space(), q.pps), pp"interval"]);
   forwards to
     if !null(lookupRefId("edu:umn:cs:melt:tutorials:ableC:interval:interval", top.env))
     then extTypeExpr(q, intervalType())
-    else errorTypeExpr([err(loc, "Missing include of interval.xh")]);
+    else errorTypeExpr([errFromOrigin(top, "Missing include of interval.xh")]);
 }
 
 abstract production intervalType
@@ -29,20 +29,20 @@ top::ExtType ::=
     \ other::ExtType -> case other of intervalType() -> true | _ -> false end;
   
   -- Additional equations specify overload productions for the interval type
-  top.objectInitProd = just(initInterval(_, location=_));
-  top.memberProd = just(memberInterval(_, _, _, location=_));
-  top.negativeProd = just(negInterval(_, location=_));
-  top.bitNegateProd = just(invInterval(_, location=_));
-  top.lAddProd = just(addInterval(_, _, location=_));
-  top.rAddProd = just(addInterval(_, _, location=_));
-  top.lSubProd = just(subInterval(_, _, location=_));
-  top.rSubProd = just(subInterval(_, _, location=_));
-  top.lMulProd = just(mulInterval(_, _, location=_));
-  top.rMulProd = just(mulInterval(_, _, location=_));
-  top.lDivProd = just(divInterval(_, _, location=_));
-  top.rDivProd = just(divInterval(_, _, location=_));
+  top.objectInitProd = just(initInterval);
+  top.memberProd = just(memberInterval);
+  top.negativeProd = just(negInterval);
+  top.bitNegateProd = just(invInterval);
+  top.lAddProd = just(addInterval);
+  top.rAddProd = just(addInterval);
+  top.lSubProd = just(subInterval);
+  top.rSubProd = just(subInterval);
+  top.lMulProd = just(mulInterval);
+  top.rMulProd = just(mulInterval);
+  top.lDivProd = just(divInterval);
+  top.rDivProd = just(divInterval);
   -- Overloads for +=, -=, *=, /= automatically inferred from above
-  top.lEqualsProd = just(equalsInterval(_, _, location=_));
-  top.rEqualsProd = just(equalsInterval(_, _, location=_));
+  top.lEqualsProd = just(equalsInterval);
+  top.rEqualsProd = just(equalsInterval);
   -- Overload for != automatically inferred from above
 }

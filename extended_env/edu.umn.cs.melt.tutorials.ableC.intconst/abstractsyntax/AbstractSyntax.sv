@@ -11,11 +11,12 @@ abstract production intConstDecl
 top::Decl ::= n::Name v::Integer
 {
   top.pp = pp"intconst ${n.pp} = ${text(toString(v))};";
+  attachNote extensionGenerated("intconst");
   propagate env;
   local localErrors::[Message] = n.intConstRedeclarationCheck;
   
   local fwrd::Decl =
-    defsDecl([intConstDef(n.name, intConstItem(v, n.location))]);
+    defsDecl([intConstDef(n.name, intConstItem(v))]);
   
   forwards to
     if !null(localErrors)
@@ -30,9 +31,8 @@ top::Expr ::= n::Name
   propagate env;
   local localErrors::[Message] = n.intConstLookupCheck;
   
-  local fwrd::Expr = mkIntConst(n.intConstItem.value, n.location); -- Helper function that constructs an integer literal Expr
+  local fwrd::Expr = mkIntConst(n.intConstItem.value); -- Helper function that constructs an integer literal Expr
   
   forwards to mkErrorCheck(localErrors, fwrd);
 }
 
-global builtin::Location = builtinLoc("intconst");

@@ -12,22 +12,23 @@ abstract production exponentExpr
 top::Expr ::= l::Expr r::Expr
 {
   top.pp = pp"(${l.pp} ** ${r.pp})";
+  attachNote extensionGenerated("exponent");
   propagate controlStmtContext;
 
   local localErrors::[Message] =
     (if !l.typerep.isArithmeticType
-     then [err(l.location, s"Exponent base must have aritimetic type (got ${showType(l.typerep)})")]
+     then [errFromOrigin(l, s"Exponent base must have aritimetic type (got ${showType(l.typerep)})")]
      else []) ++
     (if !r.typerep.isIntegerType
-     then [err(l.location, s"Exponent power must have integer type (got ${showType(r.typerep)})")]
+     then [errFromOrigin(l, s"Exponent power must have integer type (got ${showType(r.typerep)})")]
      else []);
 
   local lTempName::String = "_l_" ++ toString(genInt());
   local rTempName::String = "_r_" ++ toString(genInt());
   local fwrd::Expr =
     ableC_Expr {
-      ({$Decl{autoDecl(name(lTempName, location=builtin), decExpr(l, location=builtin))};
-        $Decl{autoDecl(name(rTempName, location=builtin), decExpr(r, location=builtin))};
+      ({$Decl{autoDecl(name(lTempName), decExpr(l))};
+        $Decl{autoDecl(name(rTempName), decExpr(r))};
         $directTypeExpr{l.typerep} _res = 1;
         if ($name{rTempName} < 0) {
           $name{lTempName} = 1 / $name{lTempName};
@@ -45,4 +46,3 @@ top::Expr ::= l::Expr r::Expr
   forwards to mkErrorCheck(localErrors, fwrd);
 }
 
-global builtin::Location = builtinLoc("exponent");

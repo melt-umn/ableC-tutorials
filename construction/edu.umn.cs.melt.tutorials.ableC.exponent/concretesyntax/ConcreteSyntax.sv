@@ -11,5 +11,5 @@ marking terminal ExponentOp_t '**' lexer classes {Operator};
 concrete production exponentExpr_c
 top::AddMulRightOp_c ::= '**'
 {
-  top.ast = exponentExpr(top.leftExpr, top.rightExpr, location=top.location);
+  top.ast = exponentExpr(top.leftExpr, top.rightExpr);
 }

@@ -8,11 +8,9 @@ s::Stmt ::=
   forwards to
     exprStmt(
       directCallExpr( 
-        name("printf", location=builtin),
+        name("printf"),
         consExpr(
-          stringLiteral("\"Hello, world!\\n\"", location=builtin),
-          nilExpr()),
-        location=builtin));
+          stringLiteral("\"Hello, world!\\n\""),
+          nilExpr())));
 }
 
-global builtin::Location = builtinLoc("helloworld");

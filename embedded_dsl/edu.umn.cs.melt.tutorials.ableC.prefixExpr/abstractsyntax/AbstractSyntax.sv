@@ -24,13 +24,14 @@ top::Expr ::= pe::PrefixExpr
 -- New attribute to compute the translation of a PrefixExpr to an Expr
 translation attribute toExpr::Expr;
 
-nonterminal PrefixExpr with location, pp, toExpr, typerep, errors;
+tracked nonterminal PrefixExpr with pp, toExpr, typerep, errors;
 
 abstract production addPrefixExpr
 top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
 {
   top.pp = pp"+ ${pe1.pp} ${pe2.pp}";
-  top.toExpr = addExpr(@pe1.toExpr, @pe2.toExpr, location=top.location);
+  attachNote extensionGenerated("prefix");
+  top.toExpr = addExpr(@pe1.toExpr, @pe2.toExpr);
   top.typerep = usualAdditiveConversionsOnTypes(pe1.typerep, pe2.typerep);
   top.errors := pe1.errors ++ pe2.errors;
 
@@ -38,7 +39,7 @@ top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
     case pe1.typerep, pe2.typerep, top.typerep of
     | errorType(), _, _ -> []
     | _, errorType(), _ -> []
-    | t1, t2, errorType() -> [err(top.location, s"Invalid parameter types to prefix + (got ${showType(t1)}, ${showType(t2)})")]
+    | t1, t2, errorType() -> [errFromOrigin(top, s"Invalid parameter types to prefix + (got ${showType(t1)}, ${showType(t2)})")]
     | _, _, _ -> []
     end;
 }
@@ -47,7 +48,8 @@ abstract production subPrefixExpr
 top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
 {
   top.pp = pp"- ${pe1.pp} ${pe2.pp}";
-  top.toExpr = subExpr(@pe1.toExpr, @pe2.toExpr, location=top.location);
+  attachNote extensionGenerated("prefix");
+  top.toExpr = subExpr(@pe1.toExpr, @pe2.toExpr);
   top.typerep = usualSubtractiveConversionsOnTypes(pe1.typerep, pe2.typerep);
   top.errors := pe1.errors ++ pe2.errors;
 
@@ -55,7 +57,7 @@ top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
     case pe1.typerep, pe2.typerep, top.typerep of
     | errorType(), _, _ -> []
     | _, errorType(), _ -> []
-    | t1, t2, errorType() -> [err(top.location, s"Invalid parameter types to prefix - (got ${showType(t1)}, ${showType(t2)})")]
+    | t1, t2, errorType() -> [errFromOrigin(top, s"Invalid parameter types to prefix - (got ${showType(t1)}, ${showType(t2)})")]
     | _, _, _ -> []
     end;
 }
@@ -64,7 +66,8 @@ abstract production mulPrefixExpr
 top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
 {
   top.pp = pp"* ${pe1.pp} ${pe2.pp}";
-  top.toExpr = mulExpr(@pe1.toExpr, @pe2.toExpr, location=top.location);
+  attachNote extensionGenerated("prefix");
+  top.toExpr = mulExpr(@pe1.toExpr, @pe2.toExpr);
   top.typerep = usualArithmeticConversionsOnTypes(pe1.typerep, pe2.typerep);
   top.errors := pe1.errors ++ pe2.errors;
 
@@ -72,7 +75,7 @@ top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
     case pe1.typerep, pe2.typerep, top.typerep of
     | errorType(), _, _ -> []
     | _, errorType(), _ -> []
-    | t1, t2, errorType() -> [err(top.location, s"Invalid parameter types to prefix * (got ${showType(t1)}, ${showType(t2)})")]
+    | t1, t2, errorType() -> [errFromOrigin(top, s"Invalid parameter types to prefix * (got ${showType(t1)}, ${showType(t2)})")]
     | _, _, _ -> []
     end;
 }
@@ -81,7 +84,8 @@ abstract production divPrefixExpr
 top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
 {
   top.pp = pp"/ ${pe1.pp} ${pe2.pp}";
-  top.toExpr = divExpr(@pe1.toExpr, @pe2.toExpr, location=top.location);
+  attachNote extensionGenerated("prefix");
+  top.toExpr = divExpr(@pe1.toExpr, @pe2.toExpr);
   top.typerep = usualArithmeticConversionsOnTypes(pe1.typerep, pe2.typerep);
   top.errors := pe1.errors ++ pe2.errors;
 
@@ -89,7 +93,7 @@ top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
     case pe1.typerep, pe2.typerep, top.typerep of
     | errorType(), _, _ -> []
     | _, errorType(), _ -> []
-    | t1, t2, errorType() -> [err(top.location, s"Invalid parameter types to prefix / (got ${showType(t1)}, ${showType(t2)})")]
+    | t1, t2, errorType() -> [errFromOrigin(top, s"Invalid parameter types to prefix / (got ${showType(t1)}, ${showType(t2)})")]
     | _, _, _ -> []
     end;
 }
@@ -103,4 +107,3 @@ top::PrefixExpr ::= e::Expr
   top.errors := e.errors;
 }
 
-global builtin::Location = builtinLoc("prefix");
