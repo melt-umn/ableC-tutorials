@@ -12,6 +12,7 @@ abstract production prefixExpr
 top::Expr ::= pe::PrefixExpr
 {
   top.pp = pp"prefix (${pe.pp})";
+  propagate env, controlStmtContext;
 
   -- Check for errors on the EDSL AST
   -- Either forward to an error production or the computed translation
@@ -21,7 +22,8 @@ top::Expr ::= pe::PrefixExpr
 -- New attribute to compute the translation of a PrefixExpr to an Expr
 synthesized attribute toExpr::Expr;
 
-nonterminal PrefixExpr with location, pp, toExpr, typerep, errors, env, returnType;
+nonterminal PrefixExpr with location, pp, toExpr, typerep, errors, env, controlStmtContext;
+propagate env, controlStmtContext on PrefixExpr;
 
 abstract production addPrefixExpr
 top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr

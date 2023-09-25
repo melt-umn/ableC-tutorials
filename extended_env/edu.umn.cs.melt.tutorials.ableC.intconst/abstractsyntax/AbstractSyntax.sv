@@ -11,6 +11,7 @@ abstract production intConstDecl
 top::Decl ::= n::Name v::Integer
 {
   top.pp = pp"intconst ${n.pp} = ${text(toString(v))};";
+  propagate env;
   local localErrors::[Message] = n.intConstRedeclarationCheck;
   
   local fwrd::Decl =
@@ -26,6 +27,7 @@ abstract production intConstRef
 top::Expr ::= n::Name
 {
   top.pp = n.pp;
+  propagate env;
   local localErrors::[Message] = n.intConstLookupCheck;
   
   local fwrd::Expr = mkIntConst(n.intConstItem.value, n.location); -- Helper function that constructs an integer literal Expr
