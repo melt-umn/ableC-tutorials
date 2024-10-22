@@ -11,24 +11,23 @@ abstract production averageExpr
 top::Expr ::= l::Expr r::Expr
 {
   top.pp = pp"(${l.pp} ~~ ${r.pp})";
+  attachNote extensionGenerated("average");
   propagate env, controlStmtContext;
 
   local localErrors::[Message] =
     (if !l.typerep.isArithmeticType
-     then [err(l.location, s"Average operand must have arithmetic type (got ${showType(l.typerep)})")]
+     then [errFromOrigin(l, s"Average operand must have arithmetic type (got ${showType(l.typerep)})")]
      else []) ++
     (if !r.typerep.isArithmeticType
-     then [err(l.location, s"Average operand must have arithmetic type (got ${showType(r.typerep)})")]
+     then [errFromOrigin(l, s"Average operand must have arithmetic type (got ${showType(r.typerep)})")]
      else []);
   local fwrd::Expr =
-    divExpr(addExpr(l, r, location=builtin), mkIntConst(2, builtin), location=builtin);
+    divExpr(addExpr(l, r), mkIntConst(2));
   
   {- Same as
   forwards to
     if !null(localErrors)
-    then errorExpr(localErrors, location=top.location)
+    then errorExpr(localErrors)
     else fwrd;-}
   forwards to mkErrorCheck(localErrors, fwrd);
 }
-
-global builtin::Location = builtinLoc("average");

@@ -55,7 +55,7 @@ marking terminal Tainted_t 'tainted' lexer classes {Keyword, Global};
 concrete production taintedTypeQualifier_c
 top::TypeQualifier_c ::= 'tainted'
 {
-  top.typeQualifiers = foldQualifier([taintedQualifier(location=top.location)]);
+  top.typeQualifiers = foldQualifier([taintedQualifier()]);
   top.mutateTypeSpecifiers = [];
 }
 ```
@@ -103,8 +103,8 @@ top::Qualifier ::=
     | _                  -> false
     end;
   top.errors :=
-    if containsQualifier(untaintedQualifier(location=builtin), top.typeToQualify)
-    then [err(top.location, "cannot qualify a type as both tainted and untainted")]
+    if containsQualifier(untaintedQualifier(), top.typeToQualify)
+    then [errFromOrigin(top, "cannot qualify a type as both tainted and untainted")]
     else [];
 }
 ```

@@ -10,5 +10,5 @@ marking terminal AverageOp_t '~~' lexer classes {Operator};
 concrete production averageExpr_c
 top::AddMulNoneOp_c ::= '~~'
 {
-  top.ast = averageExpr(top.leftExpr, top.rightExpr, location=top.location);
+  top.ast = averageExpr(top.leftExpr, top.rightExpr);
 }

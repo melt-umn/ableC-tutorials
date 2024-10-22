@@ -1,10 +1,13 @@
 grammar edu:umn:cs:melt:tutorials:ableC:globalint:abstractsyntax;
 
+imports silver:langutil;
+
 imports edu:umn:cs:melt:ableC:abstractsyntax:host;
 
 abstract production globalIntRefExpr
 top::Expr ::= n::Name
 {
+  attachNote extensionGenerated("globalint");
   -- The name of the variable implementing this global int
   local varName::String = s"_globalint_${n.name}";
   
@@ -18,8 +21,6 @@ top::Expr ::= n::Name
           ableC_Decl { int $name{varName}; }),
         nilDecl()),
       -- The 'base' AST that will exist after lifting has occured
-      declRefExpr(name(varName, location=builtin), location=builtin),
-      location=builtin);
+      declRefExpr(name(varName)));
 }
 
-global builtin::Location = builtinLoc("globalint");

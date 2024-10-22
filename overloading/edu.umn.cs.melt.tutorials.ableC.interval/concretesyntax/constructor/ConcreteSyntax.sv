@@ -14,4 +14,4 @@ marking terminal Intr_t 'intr' lexer classes {Keyword, Global};
 
 concrete productions top::PrimaryExpr_c
 | 'intr' '[' min::AssignExpr_c ',' max::AssignExpr_c ']'
-  { top.ast = newInterval(min.ast, max.ast, location=top.location); }
+  { top.ast = newInterval(min.ast, max.ast); }

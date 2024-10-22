@@ -5,20 +5,18 @@ imports silver:util:treemap as tm;
 -- Define an item to store values to be placed into the environment
 synthesized attribute value::Integer;
 
-nonterminal IntConstItem with value, sourceLocation;
+tracked nonterminal IntConstItem with value;
 
 abstract production intConstItem
-top::IntConstItem ::= value::Integer sourceLocation::Location
+top::IntConstItem ::= value::Integer
 {
   top.value = value;
-  top.sourceLocation = sourceLocation;
 }
 
 abstract production errorIntConstItem
 top::IntConstItem ::= 
 {
   top.value = 0; -- Default value in case of error
-  top.sourceLocation = builtin;
 }
 
 -- Define a new namespace on the environment storing the new type of item
@@ -97,7 +95,7 @@ top::Name ::= n::String
   local intConsts::[IntConstItem] = lookupIntConst(n, top.env);
   top.intConstLookupCheck =
     case intConsts of
-    | [] -> [err(top.location, "Undeclared integer constant " ++ n)]
+    | [] -> [errFromOrigin(top, "Undeclared integer constant " ++ n)]
     | _ :: _ -> []
     end;
     
@@ -105,9 +103,9 @@ top::Name ::= n::String
     case intConsts of
     | [] -> []
     | v :: _ ->
-      [err(top.location, 
-        "Redeclaration of " ++ n ++ ". Original (from line " ++
-        toString(v.sourceLocation.line) ++ ")")]
+      [errFromOrigin(top,
+        "Redeclaration of " ++ n ++ ". Original (from " ++
+        getParsedOriginLocationOrFallback(v).unparse ++ ")")]
     end;
   
   local intConst::IntConstItem = if null(intConsts) then errorIntConstItem() else head(intConsts);

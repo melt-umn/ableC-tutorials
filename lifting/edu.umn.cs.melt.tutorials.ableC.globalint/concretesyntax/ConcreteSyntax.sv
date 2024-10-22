@@ -12,5 +12,5 @@ marking terminal GlobalInt_t 'globalint' lexer classes {Keyword, Global};
 concrete production globalIntRefExpr_c
 top::PrimaryExpr_c ::= 'globalint' id::Identifier_t
 {
-  top.ast = globalIntRefExpr(fromId(id), location=top.location);
+  top.ast = globalIntRefExpr(fromId(id));
 }
