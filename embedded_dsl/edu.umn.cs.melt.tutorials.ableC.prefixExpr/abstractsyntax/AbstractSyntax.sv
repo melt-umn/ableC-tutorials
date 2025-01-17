@@ -18,7 +18,7 @@ top::Expr ::= pe::PrefixExpr
 
   -- Check for errors on the EDSL AST
   -- Either forward to an error production or the computed translation
-  forwards to mkErrorCheck(pe.errors, fwrd);
+  forwards to mkErrorCheck(pe.errors, ^fwrd);
 }
 
 -- New attribute to compute the translation of a PrefixExpr to an Expr
@@ -39,7 +39,7 @@ top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
     case pe1.typerep, pe2.typerep, top.typerep of
     | errorType(), _, _ -> []
     | _, errorType(), _ -> []
-    | t1, t2, errorType() -> [errFromOrigin(top, s"Invalid parameter types to prefix + (got ${showType(t1)}, ${showType(t2)})")]
+    | t1, t2, errorType() -> [errFromOrigin(top, s"Invalid parameter types to prefix + (got ${show(80, t1)}, ${show(80, t2)})")]
     | _, _, _ -> []
     end;
 }
@@ -57,7 +57,7 @@ top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
     case pe1.typerep, pe2.typerep, top.typerep of
     | errorType(), _, _ -> []
     | _, errorType(), _ -> []
-    | t1, t2, errorType() -> [errFromOrigin(top, s"Invalid parameter types to prefix - (got ${showType(t1)}, ${showType(t2)})")]
+    | t1, t2, errorType() -> [errFromOrigin(top, s"Invalid parameter types to prefix - (got ${show(80, t1)}, ${show(80, t2)})")]
     | _, _, _ -> []
     end;
 }
@@ -75,7 +75,7 @@ top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
     case pe1.typerep, pe2.typerep, top.typerep of
     | errorType(), _, _ -> []
     | _, errorType(), _ -> []
-    | t1, t2, errorType() -> [errFromOrigin(top, s"Invalid parameter types to prefix * (got ${showType(t1)}, ${showType(t2)})")]
+    | t1, t2, errorType() -> [errFromOrigin(top, s"Invalid parameter types to prefix * (got ${show(80, t1)}, ${show(80, t2)})")]
     | _, _, _ -> []
     end;
 }
@@ -93,7 +93,7 @@ top::PrefixExpr ::= pe1::PrefixExpr pe2::PrefixExpr
     case pe1.typerep, pe2.typerep, top.typerep of
     | errorType(), _, _ -> []
     | _, errorType(), _ -> []
-    | t1, t2, errorType() -> [errFromOrigin(top, s"Invalid parameter types to prefix / (got ${showType(t1)}, ${showType(t2)})")]
+    | t1, t2, errorType() -> [errFromOrigin(top, s"Invalid parameter types to prefix / (got ${show(80, t1)}, ${show(80, t2)})")]
     | _, _, _ -> []
     end;
 }
