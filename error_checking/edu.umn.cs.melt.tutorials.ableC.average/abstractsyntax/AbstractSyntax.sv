@@ -12,22 +12,14 @@ top::Expr ::= l::Expr r::Expr
 {
   top.pp = pp"(${l.pp} ~~ ${r.pp})";
   attachNote extensionGenerated("average");
-  propagate env, controlStmtContext;
 
   local localErrors::[Message] =
     (if !l.typerep.isArithmeticType
-     then [errFromOrigin(l, s"Average operand must have arithmetic type (got ${showType(l.typerep)})")]
+     then [errFromOrigin(l, s"Average operand must have arithmetic type (got ${show(80, l.typerep)})")]
      else []) ++
     (if !r.typerep.isArithmeticType
-     then [errFromOrigin(l, s"Average operand must have arithmetic type (got ${showType(r.typerep)})")]
+     then [errFromOrigin(l, s"Average operand must have arithmetic type (got ${show(80, r.typerep)})")]
      else []);
-  local fwrd::Expr =
-    divExpr(addExpr(l, r), mkIntConst(2));
-  
-  {- Same as
-  forwards to
-    if !null(localErrors)
-    then errorExpr(localErrors)
-    else fwrd;-}
-  forwards to mkErrorCheck(localErrors, fwrd);
+  forward fwrd = divExpr(addExpr(@l, @r), mkIntConst(2));
+  forwards to if !null(localErrors) then errorExpr(localErrors) else @fwrd;
 }
