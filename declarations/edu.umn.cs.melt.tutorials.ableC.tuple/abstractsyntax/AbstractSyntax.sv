@@ -17,17 +17,20 @@ top::Decl ::= n::Name tns::TypeNames
 
   tns.index = 0;
 
-  forwards to
+  forward fwrd = 
     decls(
       foldDecl(
         -- declarations implicit in tns, such as forward-declaring structs
-        tns.decls ++
+        -- Questions: why comment out this still works? 
+        -- if don't comment out, error: AbstractSyntax.sv:24:12: error: Undeclared attribute 'decls'.
+        -- did decls rename to other name?
+        -- tns.decls ++
         -- typedef struct ${n} ${n};
         [typedefDecls(
            nilAttribute(),
-           tagReferenceTypeExpr(nilQualifier(), structSEU(), n),
+           tagReferenceTypeExpr(nilQualifier(), structSEU(), ^n),
            consDeclarator(
-             declarator(n, baseTypeExpr(), nilAttribute(), nothingInitializer()),
+             declarator(^n, baseTypeExpr(), nilAttribute(), nothingInitializer()),
              nilDeclarator())),
          -- Defer the struct definition until all members have been defined
          -- Construct a chain of deferredDecl productions for each member refId
@@ -40,10 +43,12 @@ top::Decl ::= n::Name tns::TypeNames
                nilQualifier(),
                structDecl(
                  nilAttribute(),
-                 justName(n),
+                 justName(^n),
                  tns.tupleStructItems))),
            -- Compute the list of all member refIds
            catMaybes(map((.maybeRefId), tns.typereps)))]));
+-- add error check
+      forwards to ^fwrd;
 }
 
 synthesized attribute tupleStructItems :: StructItemList occurs on TypeNames;
@@ -58,9 +63,9 @@ top::TypeNames ::= h::TypeName t::TypeNames
     consStructItem(
       structItem(
         nilAttribute(),
-        h.bty,
+        ^h.bty,
         consStructDeclarator(
-          structField(name(fieldName), h.mty, nilAttribute()),
+          structField(name(fieldName), ^h.mty, nilAttribute()),
           nilStructDeclarator())),
       t.tupleStructItems);
   t.index = top.index + 1;
